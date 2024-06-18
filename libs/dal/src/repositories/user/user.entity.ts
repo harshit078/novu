@@ -55,8 +55,6 @@ export class UserEntity {
   jobTitle?: JobTitleEnum;
 
   externalId?: string;
-
-  lastEnvironmentId?: string;
 }
 
 export type UserDBModel = UserEntity;

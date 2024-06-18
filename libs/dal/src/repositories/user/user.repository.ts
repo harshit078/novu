@@ -32,22 +32,6 @@ export class UserRepository extends BaseRepository<UserDBModel, UserEntity, obje
     });
   }
 
-  async findByLoginProvider(profileId: string, provider: AuthProviderEnum): Promise<UserEntity | null> {
-    return this.findOne({
-      'tokens.providerId': profileId,
-      'tokens.provider': provider,
-    });
-  }
-
-  async userExists(userId: string) {
-    return !!(await this.findOne(
-      {
-        _id: userId,
-      },
-      '_id'
-    ));
-  }
-
   async updatePasswordResetToken(userId: string, token: string, resetTokenCount: IUserResetTokenCount) {
     return await this.update(
       {
@@ -63,16 +47,19 @@ export class UserRepository extends BaseRepository<UserDBModel, UserEntity, obje
     );
   }
 
-  async updateLastEnvironmentId(userId: string, environmentId: string) {
-    return await this.update(
+  async findByLoginProvider(profileId: string, provider: AuthProviderEnum): Promise<UserEntity | null> {
+    return this.findOne({
+      'tokens.providerId': profileId,
+      'tokens.provider': provider,
+    });
+  }
+
+  async userExists(userId: string) {
+    return !!(await this.findOne(
       {
         _id: userId,
       },
-      {
-        $set: {
-          lastEnvironmentId: environmentId,
-        },
-      }
-    );
+      '_id'
+    ));
   }
 }

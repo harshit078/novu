@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { matchPath } from 'react-router-dom';
+import { matchPath, useLocation } from 'react-router-dom';
 
 import { Select, IconConstruction, IconRocketLaunch } from '@novu/design-system';
 
@@ -16,13 +16,12 @@ function checkIfEnvBasedRoute() {
 
 export function EnvironmentSelect() {
   const [isPopoverOpened, setIsPopoverOpened] = useState<boolean>(false);
-  // const location = useLocation();
-  const { environment, environments, isLoading, switchEnvironment } = useEnvironment();
+  const location = useLocation();
+  const { environment, environments, isLoading, switchEnvironment, switchToDevelopmentEnvironment } = useEnvironment();
 
   async function handlePopoverLinkClick(e) {
     e.preventDefault();
-
-    // await setEnvironment(BaseEnvironmentEnum.DEVELOPMENT, { route: ROUTES.CHANGES });
+    await switchToDevelopmentEnvironment(ROUTES.CHANGES);
   }
 
   const onChange = async (value) => {
@@ -40,6 +39,7 @@ export function EnvironmentSelect() {
   };
 
   return (
+    // TODO: Restore the popover logic
     <EnvironmentPopover
       isPopoverOpened={isPopoverOpened}
       setIsPopoverOpened={setIsPopoverOpened}

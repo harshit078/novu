@@ -35,8 +35,11 @@ export const useEnvironment = (options: UseQueryOptions<IEnvironment, any, IEnvi
     async (environmentId: string, redirectUrl?: string) => {
       saveEnvironmentId(environmentId);
       setCurrentEnvId(environmentId);
-      // TODO: Update user's last environment on the server
 
+      /*
+       * TODO: Replace this revalidation by ensuring all query Keys in react-query contain the environmentId
+       * This call creates an avalance of HTTP requests and also causes flakiness in the e2e suite.
+       */
       await queryClient.invalidateQueries();
 
       if (redirectUrl) {
