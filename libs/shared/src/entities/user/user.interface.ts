@@ -15,6 +15,7 @@ export interface IUserEntity {
   servicesHashes?: IServicesHashes;
   jobTitle?: JobTitleEnum;
   hasPassword: boolean;
+  lastEnvironmentId?: string;
 }
 
 export interface IUpdateUserProfile {
