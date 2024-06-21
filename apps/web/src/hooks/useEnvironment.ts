@@ -1,10 +1,10 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useQueryClient, UseQueryOptions } from '@tanstack/react-query';
+import { useCallback, useMemo, useState } from 'react';
+import { useQuery, useQueryClient, UseQueryOptions } from '@tanstack/react-query';
 import { IEnvironment } from '@novu/shared';
+import { getEnvironments } from '../api/environment';
 
-import { useAuth, useEnvironments } from './index';
+import { QueryKeys } from '../api/query.keys';
 import { useNavigate } from 'react-router-dom';
-import { ROUTES } from '../constants/routes';
 import { IS_DOCKER_HOSTED } from '../config/index';
 import { BaseEnvironmentEnum } from '../constants/BaseEnvironmentEnum';
 
@@ -12,12 +12,8 @@ export type EnvironmentName = BaseEnvironmentEnum | IEnvironment['name'];
 
 const LOCAL_STORAGE_LAST_ENVIRONMENT_ID = 'novu_last_environment_id';
 
-function saveEnvironmentId(environmentId: string | null) {
-  if (environmentId) {
-    localStorage.setItem(LOCAL_STORAGE_LAST_ENVIRONMENT_ID, environmentId);
-  } else {
-    localStorage.removeItem(LOCAL_STORAGE_LAST_ENVIRONMENT_ID);
-  }
+function saveEnvironmentId(environmentId: string) {
+  localStorage.setItem(LOCAL_STORAGE_LAST_ENVIRONMENT_ID, environmentId);
 }
 
 function getEnvironmentId(): string {
@@ -27,9 +23,15 @@ function getEnvironmentId(): string {
 export const useEnvironment = (options: UseQueryOptions<IEnvironment, any, IEnvironment> = {}, bridge = false) => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { currentUser } = useAuth();
-  const [currentEnvId, setCurrentEnvId] = useState<string>();
-  const { data: environments, isLoading, refetch: refetchEnvironments } = useEnvironments();
+  const [currentEnvId, setCurrentEnvId] = useState<string>(getEnvironmentId());
+  const {
+    data: environments,
+    isLoading,
+    refetch: refetchEnvironments,
+  } = useQuery<IEnvironment[]>([QueryKeys.myEnvironments], getEnvironments, {
+    enabled: false,
+    staleTime: Infinity,
+  });
 
   const switchEnvironment = useCallback(
     async (environmentId: string, redirectUrl?: string) => {
@@ -55,6 +57,8 @@ export const useEnvironment = (options: UseQueryOptions<IEnvironment, any, IEnvi
 
       if (envId) {
         await switchEnvironment(envId, redirectUrl);
+      } else {
+        throw new Error('Production environment not found');
       }
     },
     [environments, switchEnvironment]
@@ -66,6 +70,8 @@ export const useEnvironment = (options: UseQueryOptions<IEnvironment, any, IEnvi
 
       if (envId) {
         await switchEnvironment(envId, redirectUrl);
+      } else {
+        throw new Error('Development environment not found');
       }
     },
     [environments, switchEnvironment]
@@ -79,10 +85,7 @@ export const useEnvironment = (options: UseQueryOptions<IEnvironment, any, IEnvi
     }
 
     // Find the environment based on the current user's last environment
-    const lastEnvironmentId = getEnvironmentId();
-    if (lastEnvironmentId) {
-      e = environments.find((env) => env._id === lastEnvironmentId);
-    }
+    e = environments.find((env) => env._id === currentEnvId);
 
     // Or pick the development environment
     if (!e) {
@@ -91,14 +94,6 @@ export const useEnvironment = (options: UseQueryOptions<IEnvironment, any, IEnvi
 
     return e;
   }, [environments, currentEnvId]);
-
-  useEffect(() => {
-    if (environment) {
-      saveEnvironmentId(environment._id);
-    } else {
-      saveEnvironmentId('');
-    }
-  }, [environment]);
 
   return {
     environment,
