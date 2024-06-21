@@ -1,10 +1,11 @@
 import type http from 'http';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, BadRequestException, UnauthorizedException } from '@nestjs/common';
 import { UserSessionData } from '@novu/shared';
 import { AuthService, Instrument } from '@novu/application-generic';
 import { HttpRequestHeaderKeysEnum } from '../../../shared/framework/types';
+import { env } from 'process';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -23,8 +24,14 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       throw new UnauthorizedException();
     }
 
+    const headerKey = HttpRequestHeaderKeysEnum.NOVU_ENVIRONMENT_ID.toLowerCase();
     const environmentId = req.headers[HttpRequestHeaderKeysEnum.NOVU_ENVIRONMENT_ID.toLowerCase()];
 
-    return { ...payload, environmentId };
+    if (!environmentId) {
+      throw new BadRequestException('Missing environment id', {
+        cause: 'missing_environment_id',
+        description: `Missing environment id in ${headerKey} header`,
+      });
+    }
   }
 }
