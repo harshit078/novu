@@ -34,7 +34,7 @@ export function TemplatePushEditor() {
     channelType: ChannelTypeEnum.PUSH,
   });
   const { template } = useTemplateEditorForm();
-  const { bridge } = useEnvironment({}, template?.bridge);
+  const { bridge } = useEnvironment({ bridge: template?.bridge });
   const [activeTab, setActiveTab] = useState<string>(PREVIEW);
   const theme = useMantineTheme();
 

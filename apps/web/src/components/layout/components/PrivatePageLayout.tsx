@@ -8,7 +8,7 @@ import { INTERCOM_APP_ID } from '../../../config';
 import { EnsureOnboardingComplete } from './EnsureOnboardingComplete';
 import { SpotLight } from '../../utils/Spotlight';
 import { SpotLightProvider } from '../../providers/SpotlightProvider';
-import { EnvironmentProvider, useEnvironment } from '../../../components/providers/EnvironmentProvider';
+import { useEnvironment } from '../../../components/providers/EnvironmentProvider';
 // TODO: Move sidebar under layout folder as it belongs here
 import { Sidebar } from '../../nav/Sidebar';
 import { HeaderNav } from './v2/HeaderNav';
@@ -46,44 +46,40 @@ export function PrivatePageLayout() {
   );
 
   return (
-    <EnsureOnboardingComplete>
-      <EnvironmentProvider>
-        <SpotLightProvider>
-          <IntercomProvider
-            appId={INTERCOM_APP_ID}
-            onShow={() => setIsIntercomOpened(true)}
-            onHide={() => setIsIntercomOpened(false)}
-          >
-            <Sentry.ErrorBoundary
-              fallback={({ error, resetError, eventId }) => (
-                <>
-                  Sorry, but something went wrong. <br />
-                  Our team has been notified and we are investigating.
+    <SpotLightProvider>
+      <IntercomProvider
+        appId={INTERCOM_APP_ID}
+        onShow={() => setIsIntercomOpened(true)}
+        onHide={() => setIsIntercomOpened(false)}
+      >
+        <Sentry.ErrorBoundary
+          fallback={({ error, resetError, eventId }) => (
+            <>
+              Sorry, but something went wrong. <br />
+              Our team has been notified and we are investigating.
+              <br />
+              <code>
+                <small style={{ color: 'lightGrey' }}>
+                  Event Id: {eventId}.
                   <br />
-                  <code>
-                    <small style={{ color: 'lightGrey' }}>
-                      Event Id: {eventId}.
-                      <br />
-                      {error.toString()}
-                    </small>
-                  </code>
-                </>
-              )}
-            >
-              <SpotLight>
-                <AppShell className={css({ '& *': { colorPalette: isLocalEnv ? 'mode.local' : 'mode.cloud' } })}>
-                  <Sidebar />
-                  <ContentShell>
-                    <FreeTrialBanner />
-                    <HeaderNav />
-                    <Outlet />
-                  </ContentShell>
-                </AppShell>
-              </SpotLight>
-            </Sentry.ErrorBoundary>
-          </IntercomProvider>
-        </SpotLightProvider>
-      </EnvironmentProvider>
-    </EnsureOnboardingComplete>
+                  {error.toString()}
+                </small>
+              </code>
+            </>
+          )}
+        >
+          <SpotLight>
+            <AppShell className={css({ '& *': { colorPalette: isLocalEnv ? 'mode.local' : 'mode.cloud' } })}>
+              <Sidebar />
+              <ContentShell>
+                <FreeTrialBanner />
+                <HeaderNav />
+                <Outlet />
+              </ContentShell>
+            </AppShell>
+          </SpotLight>
+        </Sentry.ErrorBoundary>
+      </IntercomProvider>
+    </SpotLightProvider>
   );
 }

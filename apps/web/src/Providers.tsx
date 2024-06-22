@@ -1,4 +1,5 @@
 import { ThemeProvider } from '@novu/design-system';
+import { EnvironmentProvider } from './components/providers/EnvironmentProvider';
 import { SegmentProvider } from './components/providers/SegmentProvider';
 import { CONTEXT_PATH } from './config';
 import * as Sentry from '@sentry/react';
@@ -32,7 +33,9 @@ const Providers: React.FC<PropsWithChildren<{}>> = ({ children }) => {
         <SegmentProvider>
           <QueryClientProvider client={queryClient}>
             <BrowserRouter basename={CONTEXT_PATH}>
-              <HelmetProvider>{children}</HelmetProvider>
+              <HelmetProvider>
+                <EnvironmentProvider>{children}</EnvironmentProvider>
+              </HelmetProvider>
             </BrowserRouter>
           </QueryClientProvider>
         </SegmentProvider>

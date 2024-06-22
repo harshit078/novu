@@ -139,8 +139,10 @@ export function useEnvironment({ bridge }: { bridge?: boolean } = {}) {
   return {
     ...rest,
     readOnly: readOnly || (!IS_DOCKER_HOSTED && bridge) || false,
+    // @deprecated use readOnly instead
+    readonly: readOnly || (!IS_DOCKER_HOSTED && bridge) || false,
     // @deprecated use bridge instead
-    chimera: !IS_DOCKER_HOSTED && bridge,
-    bridge: !IS_DOCKER_HOSTED && bridge,
+    chimera: (!IS_DOCKER_HOSTED && bridge) || false,
+    bridge: (!IS_DOCKER_HOSTED && bridge) || false,
   };
 }
