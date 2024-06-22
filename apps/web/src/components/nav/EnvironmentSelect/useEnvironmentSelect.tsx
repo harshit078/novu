@@ -1,5 +1,5 @@
 import { type IIconProps, IconConstruction, IconRocketLaunch } from '@novu/design-system';
-import { useEnvironment } from '../../../hooks/useEnvironment';
+import { useEnvironment } from '../../../components/providers/EnvironmentProvider';
 import { ROUTES } from '../../../constants/routes';
 import { BaseEnvironmentEnum } from '../../../constants/BaseEnvironmentEnum';
 import { useState } from 'react';
@@ -18,16 +18,19 @@ export const useEnvironmentSelect = () => {
   const [isPopoverOpened, setIsPopoverOpened] = useState<boolean>(false);
   const location = useLocation();
 
-  const { setEnvironment, isLoading, environment, readonly } = useEnvironment({
-    onSuccess: (newEnvironment) => {
-      setIsPopoverOpened(!!newEnvironment?._parentId);
-    },
+  const { switchEnvironment, switchToDevelopmentEnvironment, isLoading, environment, readOnly } = useEnvironment({
+    /*
+     * TODO:
+     * onSuccess: (newEnvironment) => {
+     *   setIsPopoverOpened(!!newEnvironment?._parentId);
+     * },
+     */
   });
 
   async function handlePopoverLinkClick(e) {
     e.preventDefault();
 
-    await setEnvironment(BaseEnvironmentEnum.DEVELOPMENT, { route: ROUTES.CHANGES });
+    await switchToDevelopmentEnvironment(ROUTES.CHANGES);
   }
 
   const onChange: ISelectProps['onChange'] = async (value) => {
@@ -46,9 +49,9 @@ export const useEnvironmentSelect = () => {
      * TODO: Review this logic to see if we want to handle this differently
      */
     if (value === 'Local') {
-      await setEnvironment(BaseEnvironmentEnum.DEVELOPMENT, { route: '/studio' });
+      await switchToDevelopmentEnvironment('/studio');
     } else {
-      await setEnvironment(value as BaseEnvironmentEnum, { route: redirectRoute });
+      await switchEnvironment('someid', redirectRoute);
     }
   };
 
@@ -69,7 +72,7 @@ export const useEnvironmentSelect = () => {
     data: data,
     value: environment?.name,
     onChange,
-    readonly,
+    readOnly,
     icon: environment?.name ? ENVIRONMENT_ICON_LOOKUP[environment.name] : null,
     isPopoverOpened,
     setIsPopoverOpened,

@@ -148,8 +148,9 @@ export const AppRoutes = () => {
 
         <Route path="/translations/*" element={<TranslationRoutes />} />
         <Route path={ROUTES.LAYOUT} element={<LayoutsPage />} />
-        <Route path={ROUTES.API_KEYS} element={<ApiKeysPage />} />
-        <Route path={ROUTES.WEBHOOK} element={<WebhookPage />} />
+        {/* The * in this case is for backwards compatibility with the previous version of these paths that included the envinronment name in the URL i.e. /api-keys/Development */}
+        <Route path={`${ROUTES.API_KEYS}/*`} element={<ApiKeysPage />} />
+        <Route path={`${ROUTES.WEBHOOK}/*`} element={<WebhookPage />} />
         <Route path={ROUTES.ANY} element={<HomePage />} />
       </Route>
       <Route path={ROUTES.STUDIO_ONBOARDING} element={<StudioOnboarding />} />

@@ -1,22 +1,16 @@
 import { useState } from 'react';
-import { matchPath, useLocation } from 'react-router-dom';
 
 import { Select, IconConstruction, IconRocketLaunch } from '@novu/design-system';
 
 import { css } from '@novu/novui/css';
 import { navSelectStyles } from '../NavSelect.styles';
 import { EnvironmentPopover } from './EnvironmentPopover';
-import { useEnvironment } from '../../../hooks';
+import { useEnvironment } from '../../../components/providers/EnvironmentProvider';
 import { ROUTES } from '../../../constants/routes';
 import { BaseEnvironmentEnum } from '../../../constants/BaseEnvironmentEnum';
 
-function checkIfEnvBasedRoute() {
-  return [ROUTES.API_KEYS, ROUTES.WEBHOOK].some((route) => matchPath(route, window.location.pathname));
-}
-
 export function EnvironmentSelect() {
   const [isPopoverOpened, setIsPopoverOpened] = useState<boolean>(false);
-  const location = useLocation();
   const { environment, environments, isLoading, switchEnvironment, switchToDevelopmentEnvironment } = useEnvironment();
 
   async function handlePopoverLinkClick(e) {
@@ -29,13 +23,7 @@ export function EnvironmentSelect() {
       return;
     }
 
-    /*
-     * this navigates users to the "base" page of the application to avoid sub-pages opened with data from other
-     * environments -- unless the path itself is based on a specific environment (e.g. API Keys)
-     */
-    const urlParts = location.pathname.replace('/', '').split('/');
-    const redirectRoute = checkIfEnvBasedRoute() ? undefined : urlParts[0];
-    await switchEnvironment(value, redirectRoute);
+    await switchEnvironment(value);
   };
 
   return (

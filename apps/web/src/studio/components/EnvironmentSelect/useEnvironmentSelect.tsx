@@ -1,6 +1,6 @@
 import { type ISelectProps } from '@novu/design-system';
 import { IconComputer, IconConstruction, IconRocketLaunch, type IIconProps } from '@novu/novui/icons';
-import { useEnvironment } from '../../../hooks';
+import { useEnvironment } from '../../../components/providers/EnvironmentProvider';
 import { ROUTES } from '../../../constants/routes';
 import { useState } from 'react';
 import { matchPath, useLocation } from 'react-router-dom';
@@ -16,11 +16,13 @@ export const useEnvironmentSelect = () => {
   const [isPopoverOpened, setIsPopoverOpened] = useState<boolean>(false);
   const location = useLocation();
 
-  const { environment, isLoading, readonly, switchEnvironment, switchToDevelopmentEnvironment } = useEnvironment({
-    // TODO: This won't work for now. It needs to be refactored.
-    onSuccess: (newEnvironment) => {
-      setIsPopoverOpened(!!newEnvironment?._parentId);
-    },
+  const { environment, isLoading, readOnly, switchEnvironment, switchToDevelopmentEnvironment } = useEnvironment({
+    /*
+     * TODO: This won't work for now. It needs to be refactored.
+     * onSuccess: (newEnvironment) => {
+     *   setIsPopoverOpened(!!newEnvironment?._parentId);
+     * },
+     */
   });
 
   async function handlePopoverLinkClick(e) {
@@ -64,7 +66,7 @@ export const useEnvironmentSelect = () => {
     })),
     value: name,
     onChange,
-    readonly,
+    readOnly,
     icon,
     isPopoverOpened,
     setIsPopoverOpened,
@@ -75,6 +77,8 @@ export const useEnvironmentSelect = () => {
 function isStudioRoute(path: string) {
   return path.includes('/studio');
 }
+
+// TODO: Remove this
 /** Determine if the current pathname is dependent on the current env */
 function checkIfEnvBasedRoute() {
   return [ROUTES.API_KEYS, ROUTES.WEBHOOK].some((route) => matchPath(route, window.location.pathname));

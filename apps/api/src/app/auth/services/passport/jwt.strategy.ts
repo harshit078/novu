@@ -24,14 +24,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       throw new UnauthorizedException();
     }
 
-    const headerKey = HttpRequestHeaderKeysEnum.NOVU_ENVIRONMENT_ID.toLowerCase();
     const environmentId = req.headers[HttpRequestHeaderKeysEnum.NOVU_ENVIRONMENT_ID.toLowerCase()];
 
-    if (!environmentId) {
-      throw new BadRequestException('Missing environment id', {
-        cause: 'missing_environment_id',
-        description: `Missing environment id in ${headerKey} header`,
-      });
-    }
+    return {
+      ...payload,
+      environmentId,
+    };
   }
 }
