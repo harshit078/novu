@@ -98,6 +98,7 @@ export function useAuth() {
 
   const logout = useCallback(() => {
     saveToken(null);
+    localStorage.removeItem('novu_last_environment_id');
     queryClient.clear();
     segment.reset();
     navigate(ROUTES.AUTH_LOGIN);

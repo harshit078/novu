@@ -27,9 +27,6 @@ import { OrganizationSelect } from './OrganizationSelect/v2/OrganizationSelect';
 import { RootNavMenuFooter } from './RootNavMenuFooter';
 import { VisibilityButton } from './VisibilityButton';
 import { FreeTrialSidebarWidget } from '../layout/components/FreeTrialSidebarWidget';
-import { parseUrl } from '../../utils/routeUtils';
-
-const getEnvPageRoute = (route: ROUTES, env: BaseEnvironmentEnum) => parseUrl(route, { env });
 
 export const RootNavMenu: React.FC = () => {
   const segment = useSegment();
@@ -122,20 +119,14 @@ export const RootNavMenu: React.FC = () => {
           label="API keys"
           isVisible
           icon={<IconKey />}
-          link={getEnvPageRoute(
-            ROUTES.API_KEYS,
-            (environment?.name as BaseEnvironmentEnum) ?? BaseEnvironmentEnum.DEVELOPMENT
-          )}
+          link={ROUTES.API_KEYS}
           testId="side-nav-settings-api-keys"
         ></NavMenuLinkButton>
         <NavMenuLinkButton
           label="Inbound webhook"
           isVisible
           icon={<IconWebhook />}
-          link={getEnvPageRoute(
-            ROUTES.WEBHOOK,
-            (environment?.name as BaseEnvironmentEnum) ?? BaseEnvironmentEnum.DEVELOPMENT
-          )}
+          link={ROUTES.WEBHOOK}
           testId="side-nav-settings-inbound-webhook"
         ></NavMenuLinkButton>
       </NavMenuSection>

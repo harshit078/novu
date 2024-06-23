@@ -130,7 +130,7 @@ export async function createNotifications({
   }
 
   const triggerIdentifier = identifier;
-  const service = new NotificationsService(token);
+  const service = new NotificationsService(token, environmentId);
   const session = new UserSession(process.env.REACT_APP_API_URL);
 
   // eslint-disable-next-line no-plusplus

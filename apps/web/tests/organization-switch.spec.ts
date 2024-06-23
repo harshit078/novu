@@ -3,7 +3,6 @@ import { test } from './utils/baseTest';
 import { initializeSession } from './utils/browser';
 import { SidebarPage } from './page-models/sidebarPage';
 import { addOrganization, SessionData } from './utils/plugins';
-import { getAuthToken } from './utils/authUtils';
 
 let session: SessionData;
 test.beforeEach(async ({ page }) => {
@@ -32,6 +31,6 @@ test('should use different jwt token after switches', async ({ page }) => {
   await selectItem.click({ force: true });
   await responsePromise;
 
-  const newToken = await getAuthToken(page);
+  const newToken = await page.evaluate(() => localStorage.getItem('auth_token'));
   expect(newToken).not.toBe(originToken);
 });

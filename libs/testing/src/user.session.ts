@@ -117,8 +117,6 @@ export class UserSession {
       await this.createEnvironmentsAndFeeds();
     }
 
-    await this.fetchJWT();
-
     if (!options.noOrganization) {
       if (!options?.noEnvironment) {
         await this.updateOrganizationDetails();
@@ -167,9 +165,7 @@ export class UserSession {
     );
 
     this.token = `Bearer ${response.body.data}`;
-    this.testAgent = defaults(request(this.requestEndpoint))
-      .set('Authorization', this.token)
-      .set('X-Novu-Environment-Id', this.environment._id);
+    this.testAgent = defaults(request(this.requestEndpoint)).set('Authorization', this.token);
   }
 
   async createEnvironmentsAndFeeds(): Promise<void> {
@@ -269,29 +265,14 @@ export class UserSession {
     return this.organization;
   }
 
+  // TODO: Replace with a getProdId
   async switchToProdEnvironment() {
     const prodEnvironment = await this.environmentService.getProductionEnvironment(this.organization._id);
-    if (prodEnvironment) {
-      await this.switchEnvironment(prodEnvironment._id);
-    }
   }
 
+  // TODO: Replace with a getDevId
   async switchToDevEnvironment() {
     const devEnvironment = await this.environmentService.getDevelopmentEnvironment(this.organization._id);
-    if (devEnvironment) {
-      await this.switchEnvironment(devEnvironment._id);
-    }
-  }
-
-  async switchEnvironment(environmentId: string) {
-    const environment = await this.environmentService.getEnvironment(environmentId);
-
-    if (environment) {
-      this.environment = environment;
-      await this.testAgent.post(`/v1/auth/environments/${environmentId}/switch`);
-
-      await this.fetchJWT();
-    }
   }
 
   async createFeed(name?: string) {

@@ -45,7 +45,8 @@ export const useOrganizationSelect = () => {
       setLoadingSwitch(true);
       const token = await changeOrganization(organizationId);
       await login(token);
-      await queryClient.refetchQueries();
+      // await queryClient.refetchQueries();
+      await queryClient.invalidateQueries();
       setLoadingSwitch(false);
     },
     [currentOrganization, search, login, changeOrganization, queryClient]

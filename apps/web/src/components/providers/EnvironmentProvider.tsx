@@ -10,7 +10,8 @@ import {
 import { IEnvironment } from '@novu/shared';
 import { QueryKeys } from '../../api/query.keys';
 import { getEnvironments } from '../../api/environment';
-import { createContextAndHook } from '../../hooks/createContextandHook';
+import { useAuth } from '../../hooks';
+import { createContextAndHook } from './createContextandHook';
 import { IS_DOCKER_HOSTED } from '../../config/index';
 import { BaseEnvironmentEnum } from '../../constants/BaseEnvironmentEnum';
 
@@ -44,6 +45,7 @@ const [EnvironmentCtx, useEnvironmentCtx] = createContextAndHook<EnvironmentCont
 
 export function EnvironmentProvider({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
+  const { currentUser } = useAuth();
   const queryClient = useQueryClient();
   const {
     data: environments,
@@ -51,6 +53,7 @@ export function EnvironmentProvider({ children }: { children: React.ReactNode })
     refetch: refetchEnvironments,
   } = useQuery<IEnvironment[]>([QueryKeys.myEnvironments], getEnvironments, {
     refetchOnWindowFocus: false,
+    enabled: !!currentUser,
     staleTime: Infinity,
   });
   const [currentEnvId, setCurrentEnvId] = useState<string>(getEnvironmentId());

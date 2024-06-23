@@ -1,11 +1,7 @@
 import axios from 'axios';
-import { ChannelTypeEnum } from '@novu/shared';
-import { MessageRepository } from '@novu/dal';
 
 export class NotificationsService {
-  private messageRepository = new MessageRepository();
-
-  constructor(private token: string) {}
+  constructor(private token: string, private environmentId: string) {}
 
   async triggerEvent(name: string, subscriberId: string, payload = {}) {
     await axios.post(
@@ -18,6 +14,7 @@ export class NotificationsService {
       {
         headers: {
           Authorization: `Bearer ${this.token}`,
+          'Novu-Environment-Id': this.environmentId,
         },
       }
     );

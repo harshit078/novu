@@ -7,7 +7,5 @@ import { useEnvironment } from '../components/providers/EnvironmentProvider';
 export function useApiKeys() {
   const { currentEnvId } = useEnvironment();
 
-  console.log('API KEYS', currentEnvId);
-
   return useQuery<IApiKey[]>([QueryKeys.getApiKeys, currentEnvId], getApiKeys);
 }
