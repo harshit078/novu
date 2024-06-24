@@ -50,14 +50,19 @@ export enum ROUTES {
   SECURITY = '/settings/security',
   BILLING = '/settings/billing',
   /** Novu V2 routes */
+
+  // It seems that the current version of React Router Dom doesn't support nested routing. If it did it would ne much simpler to implement the routes
   STUDIO = '/studio',
-  STUDIO_FLOWS = '/studio/flows',
-  STUDIO_FLOWS_VIEW = '/studio/flows/:templateId',
+  STUDIO_FLOWS = 'flows',
+  STUDIO_FLOWS_VIEW = 'flows/:templateId',
+  STUDIO_FLOWS_STEP_EDITOR = 'flows/:templateId/step/:stepId',
+  STUDIO_FLOWS_TEST = 'flows/:templateId/test',
+
   STUDIO_ONBOARDING = '/studio/onboarding',
   STUDIO_ONBOARDING_PREVIEW = '/studio/onboarding/preview',
   STUDIO_ONBOARDING_SUCCESS = '/studio/onboarding/success',
-  STUDIO_FLOWS_STEP_EDITOR = '/studio/flows/:templateId/step/:stepId',
-  STUDIO_FLOWS_TEST = '/studio/flows/:templateId/test',
+
+  LOCAL_STUDIO = '/local_studio',
 }
 
-export const PUBLIC_ROUTES_PREFIXES = new Set<string>(['/auth']);
+export const PUBLIC_ROUTES_PREFIXES = new Set<string>(['/auth', '/local_studio']);

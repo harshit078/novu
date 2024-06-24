@@ -51,6 +51,7 @@ import { AccessSecurityPage, BillingPage, TeamPage, UserProfilePage } from './pa
 import { SettingsPageNew as SettingsPage } from './pages/settings/SettingsPageNew';
 import { OrganizationPage } from './pages/settings/organization';
 import { LayoutsPage } from './pages/layouts/LayoutsPage';
+import { LocalStudioPageLayout } from './components/layout/components/LocalStudioPageLayout';
 import {
   WorkflowsListPage,
   WorkflowsDetailPage,
@@ -155,6 +156,13 @@ export const AppRoutes = () => {
       <Route path={ROUTES.STUDIO_ONBOARDING} element={<StudioOnboarding />} />
       <Route path={ROUTES.STUDIO_ONBOARDING_PREVIEW} element={<StudioOnboardingPreview />} />
       <Route path={ROUTES.STUDIO_ONBOARDING_SUCCESS} element={<StudioOnboardingSuccess />} />
+      <Route path={ROUTES.LOCAL_STUDIO} element={<LocalStudioPageLayout />}>
+        <Route path="" element={<Navigate to={ROUTES.STUDIO_FLOWS} replace />} />
+        <Route path={ROUTES.STUDIO_FLOWS} element={<WorkflowsListPage />} />
+        <Route path={ROUTES.STUDIO_FLOWS_VIEW} element={<WorkflowsDetailPage />} />
+        <Route path={ROUTES.STUDIO_FLOWS_STEP_EDITOR} element={<WorkflowsStepEditorPage />} />
+        <Route path={ROUTES.STUDIO_FLOWS_TEST} element={<WorkflowsTestPage />} />
+      </Route>
     </Routes>
   );
 };

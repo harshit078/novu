@@ -1,29 +1,16 @@
 import { Button, IconButton } from '@novu/novui';
 import { css } from '@novu/novui/css';
-import {
-  IconCable,
-  IconOutlineBolt,
-  IconOutlineEmail,
-  IconOutlineNotifications,
-  IconPlayArrow,
-  IconSettings,
-  IconOutlineAutoAwesomeMotion,
-  IconOutlineAvTimer,
-  IconOutlineForum,
-  IconOutlineMobileFriendly,
-  IconOutlineSms,
-} from '@novu/novui/icons';
-import { Flex, VStack } from '@novu/novui/jsx';
-import { useNavigate, useParams } from 'react-router-dom';
+import { IconCable, IconPlayArrow, IconSettings } from '@novu/novui/icons';
+import { useParams } from 'react-router-dom';
 import { ROUTES } from '../../../../constants/routes';
 import { WorkflowsPageTemplate } from '../layout/WorkflowsPageTemplate';
-import { StepNode } from './StepNode';
 import { WorkflowFloatingMenu } from './WorkflowFloatingMenu';
 import { useQuery } from '@tanstack/react-query';
 import { bridgeApi } from '../../../../api/bridge/bridge.api';
 import { parseUrl } from '../../../../utils/routeUtils';
 import { WorkflowNodes } from './WorkflowNodes';
 import { WorkflowBackgroundWrapper } from './WorkflowBackgroundWrapper';
+import { useStudioNavigate } from '../../../hooks/useStudioNavigate';
 
 export const WorkflowsDetailPage = () => {
   const { templateId = '' } = useParams<{ templateId: string }>();
@@ -33,12 +20,10 @@ export const WorkflowsDetailPage = () => {
   });
 
   const title = workflow?.workflowId;
-  const navigate = useNavigate();
+  const navigate = useStudioNavigate();
 
   const handleSettingsClick = () => {};
-  const handleTestClick = () => {
-    navigate(parseUrl(ROUTES.STUDIO_FLOWS_TEST, { templateId }));
-  };
+  const handleTestClick = () => navigate(ROUTES.STUDIO_FLOWS_TEST, { templateId });
 
   return (
     <WorkflowsPageTemplate
@@ -58,12 +43,10 @@ export const WorkflowsDetailPage = () => {
           steps={workflow?.steps || []}
           onClick={(step) => {
             // TODO: this is just a temporary step for connecting the prototype
-            navigate(
-              parseUrl(ROUTES.STUDIO_FLOWS_STEP_EDITOR, {
-                templateId: workflow.workflowId,
-                stepId: step.stepId,
-              })
-            );
+            navigate(ROUTES.STUDIO_FLOWS_STEP_EDITOR, {
+              templateId: workflow.workflowId,
+              stepId: step.stepId,
+            });
           }}
         />
       </WorkflowBackgroundWrapper>
