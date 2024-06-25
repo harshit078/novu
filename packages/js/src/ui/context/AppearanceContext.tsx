@@ -1,4 +1,4 @@
-import { ParentProps, createContext, createEffect, createSignal, onMount, useContext } from 'solid-js';
+import { ParentProps, createContext, createEffect, createSignal, onCleanup, onMount, useContext } from 'solid-js';
 import { createStore } from 'solid-js/store';
 import { defaultVariables } from '../config';
 import { parseElements, parseVariables } from '../helpers';
@@ -62,6 +62,13 @@ export const AppearanceProvider = (props: AppearanceProviderProps) => {
     document.head.appendChild(styleEl);
 
     setStyleElement(styleEl);
+  });
+
+  onCleanup(() => {
+    const el = document.getElementById(props.id);
+    if (el) {
+      el.remove();
+    }
   });
 
   //handle variables
